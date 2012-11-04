@@ -23,14 +23,21 @@
             android:layout_height="wrap_content"
             android:onClick="showDialog2"
             android:text="showDialog2" />
-        
+
         <Button
             android:id="@+id/startService"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="startService"
             android:text="startService" />
-         
-         </LinearLayout>
+
+        <Button
+            android:id="@+id/imageBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="imageBtn"
+            android:text="imageBtn" />
+
+        </LinearLayout>
 
 </RelativeLayout>
