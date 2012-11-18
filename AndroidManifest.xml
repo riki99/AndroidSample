@@ -45,5 +45,4 @@
     </uses-permission>
 
     <uses-sdk android:minSdkVersion="8" />
-
 </manifest>
