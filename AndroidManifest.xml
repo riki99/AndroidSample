@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.satton"
     android:versionCode="1"
+    android:installLocation="preferExternal"
     android:versionName="1.0" >
 
     <application
@@ -47,6 +48,6 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" >
     </uses-permission>
 
-    <uses-sdk android:minSdkVersion="7" />
+    <uses-sdk android:minSdkVersion="8" />
 
 </manifest>

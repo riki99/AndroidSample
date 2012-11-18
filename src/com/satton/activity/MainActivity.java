@@ -1,5 +1,7 @@
 package com.satton.activity;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,13 +9,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
+import com.satton.util.IOUtil;
 
 public class MainActivity extends Activity {
 	public static MainActivity i;
@@ -34,6 +36,20 @@ public class MainActivity extends Activity {
 			});
 		}
 
+        try {
+        	File stampFile = new File(getApplicationContext().getFilesDir(), "stamp");
+        	stampFile.mkdirs();
+
+        	File text = new File(stampFile, "text.txt");
+//        	IOUtil.writeXML(text, new String(text.getAbsolutePath()));
+
+
+        	Object obj = IOUtil.readXML(text);
+        	System.out.println(obj);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     // ----------------------------------------------------------------------
