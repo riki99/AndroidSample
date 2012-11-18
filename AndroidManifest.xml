@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.satton"
     android:versionCode="1"
+    android:installLocation="preferExternal"
     android:versionName="1.0" >
 
     <application
@@ -16,13 +17,30 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.PopupNotificationActivity"
+            android:taskAffinity=""
+            android:theme="@style/Theme.PopupTranslucent" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="co-mm_popup" />
+            </intent-filter>
+        </activity>
 
         <service android:name="com.satton.sample.screenlockenable.ScreenStateService" />
 
-        <activity android:name="com.satton.sample.screenlockenable.ScreenLockEnabledActivity" />
+        <activity
+            android:name=".activity.ImageActivity"
+            android:label="@string/title_activity_image" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <activity  android:name=".activity.BalloneActivity"/>
-        
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.WAKE_LOCK" >

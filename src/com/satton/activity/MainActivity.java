@@ -1,5 +1,7 @@
 package com.satton.activity;
 
+import java.io.File;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,12 +9,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
+import com.satton.util.IOUtil;
 
 public class MainActivity extends Activity {
 	public static MainActivity i;
@@ -21,28 +24,60 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         i = this;
+
+        Class[] as = {ImageActivity.class , PopupNotificationActivity.class};
+        for (Class<Activity> c : as) {
+			Button b = new Button(this);
+			b.setText(c.getSimpleName());
+			b.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+//					startActivity(new Intent(this, (Activity)c));
+				}
+			});
+		}
+
+
+        try {
+        	File stampFile = new File(getApplicationContext().getFilesDir(), "stamp");
+//        	stampFile.mkdirs();
+
+        	File text = new File(stampFile, "text.txt");
+//        	IOUtil.writeXML(text, new String(text.getAbsolutePath()));
+
+
+        	Object obj = IOUtil.readXML(text);
+        	System.out.println(obj);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
-    
+
     // ----------------------------------------------------------------------
+
+    public void imageBtn(View v) {
+    	startActivity(new Intent(this, ImageActivity.class));
+	}
+
     public void showDialog(View v) {
     	showDialog();
     }
     public void showDialog2(View v) {
-    	startActivity(new Intent(this,BalloneActivity.class));
+    	startActivity(new Intent(this,PopupNotificationActivity.class));
     }
 
     public void startService(View v) {
     	ScreenStateService.start();
     }
-    
+
     public static void showDialog() {
         LayoutInflater inflater = i.getLayoutInflater();
         View view = inflater.inflate(R.layout.balloon_dialog, null);
-    	
+
         Drawable bitmapDrawable = i.getResources().getDrawable(
                 R.drawable.icon_balloon);
         bitmapDrawable.setBounds(32, 32, 32, 32);
-     	        
+
     	 //ダイアログを作成します。
         final AlertDialog dlg = new AlertDialog.Builder(i)
         .setIcon( R.drawable.icon_balloon)
@@ -51,12 +86,12 @@ public class MainActivity extends Activity {
         .setPositiveButton("表示", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 			}
 		})
         .setNegativeButton("閉じる", null)
         .create();
-        
+
         dlg.getWindow().addFlags(
         		WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         		+ WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -64,14 +99,6 @@ public class MainActivity extends Activity {
 		            + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         dlg.show();
     }
-    
-    
-    @Override
-    protected void onStop() {
-    	super.onStop();
-    	com.satton.sample.screenlockenable.ScreenStateService.stop();
-    }
-    
-    
-    
+
+
  }
