@@ -7,7 +7,6 @@
 
     <!-- アクションバー -->
 
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -33,7 +32,7 @@
                     android:id="@+id/stamp_download_thumb_image"
                     android:layout_width="108dp"
                     android:layout_height="108dp"
-                    android:layout_marginRight="8dp"/>
+                    android:layout_marginRight="8dp" />
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -117,9 +116,18 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="9dp"
             android:gravity="center"
-            android:text="Download"
+            android:text="download"
             android:visibility="visible" />
 
+        <Button
+            android:id="@+id/stamp_download_button_disabled"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="9dp"
+            android:gravity="center|center_vertical"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/stamp_progress_layout"
@@ -132,22 +140,22 @@
             android:orientation="horizontal"
             android:visibility="invisible" >
 
-            <Button
+            <ProgressBar
+                android:id="@+id/stamp_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="200dp"
+                android:layout_height="20dp"
+                android:max="100" />
+
+           <Button
                 android:id="@+id/stamp_cancel_button"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
-                android:gravity="center|center_vertical" />
-
-            <ProgressBar
-                android:id="@+id/stamp_progressBar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="400dp"
-                android:layout_height="20dp"
-                android:max="100" />
-
-        </LinearLayout>
+                android:gravity="center|center_vertical"
+                android:background="@drawable/logo" />
+       </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

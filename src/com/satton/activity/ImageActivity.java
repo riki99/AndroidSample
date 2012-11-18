@@ -11,17 +11,27 @@ import android.widget.Button;
 
 public class ImageActivity extends Activity {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_image);
+		overridePendingTransition(R.anim.slidein_start, R.anim.slidein_end);
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_image, menu);
+	@Override
+	public void onBackPressed() {
+		this.finish();
+		overridePendingTransition(R.anim.slideout_start, R.anim.slideout_end);
+		return;
+	}
 
-        ((Button)findViewById(R.id.button)).setBackgroundDrawable(getResources().getDrawable(R.drawable.icon));
-        return true;
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_image, menu);
+
+		((Button) findViewById(R.id.button))
+				.setBackgroundDrawable(getResources().getDrawable(
+						R.drawable.icon));
+		return true;
+	}
 }
