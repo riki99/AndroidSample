@@ -4,14 +4,18 @@ import java.io.File;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
@@ -19,85 +23,89 @@ import com.satton.util.IOUtil;
 
 public class MainActivity extends Activity {
 	public static MainActivity i;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        i = this;
+	private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
-        Class[] as = {ImageActivity.class , PopupNotificationActivity.class};
-        for (Class<Activity> c : as) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		i = this;
+
+		@SuppressWarnings("rawtypes")
+		Class[] as = { StampDownloadActivity.class,
+				ImageActivity.class, PopupNotificationActivity.class };
+		for (final Class<Activity> c : as) {
 			Button b = new Button(this);
 			b.setText(c.getSimpleName());
 			b.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
-//					startActivity(new Intent(this, (Activity)c));
+					startActivity(new Intent(MainActivity.this, c));
 				}
 			});
+
+			LinearLayout v = (LinearLayout) findViewById(R.id.lay);
+			v.addView(b);
 		}
 
-        try {
-        	File stampFile = new File(getApplicationContext().getFilesDir(), "stamp");
-        	stampFile.mkdirs();
+		try {
+			File stampFile = new File(getApplicationContext().getFilesDir(),
+					"stamp");
+			stampFile.mkdirs();
 
-        	File text = new File(stampFile, "text.txt");
-//        	IOUtil.writeXML(text, new String(text.getAbsolutePath()));
+			File text = new File(stampFile, "text.txt");
+			// IOUtil.writeXML(text, new String(text.getAbsolutePath()));
 
-
-        	Object obj = IOUtil.readXML(text);
-        	System.out.println(obj);
+			Object obj = IOUtil.readXML(text);
+			System.out.println(obj);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    }
-
-    // ----------------------------------------------------------------------
-
-    public void imageBtn(View v) {
-    	startActivity(new Intent(this, ImageActivity.class));
 	}
 
-    public void showDialog(View v) {
-    	showDialog();
-    }
-    public void showDialog2(View v) {
-    	startActivity(new Intent(this,PopupNotificationActivity.class));
-    }
+	// ----------------------------------------------------------------------
 
-    public void startService(View v) {
-    	ScreenStateService.start();
-    }
+	public void imageBtn(View v) {
+		startActivity(new Intent(this, ImageActivity.class));
+	}
 
-    public static void showDialog() {
-        LayoutInflater inflater = i.getLayoutInflater();
-        View view = inflater.inflate(R.layout.balloon_dialog, null);
+	public void showDialog(View v) {
+		showDialog();
+	}
 
-        Drawable bitmapDrawable = i.getResources().getDrawable(
-                R.drawable.icon_balloon);
-        bitmapDrawable.setBounds(32, 32, 32, 32);
+	public void showDialog2(View v) {
+		startActivity(new Intent(this, PopupNotificationActivity.class));
+	}
 
-    	 //ダイアログを作成します。
-        final AlertDialog dlg = new AlertDialog.Builder(i)
-        .setIcon( R.drawable.icon_balloon)
-        .setTitle("太郎さん")
-        .setView(view)
-        .setPositiveButton("表示", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
+	public void startService(View v) {
+		ScreenStateService.start();
+	}
 
-			}
-		})
-        .setNegativeButton("閉じる", null)
-        .create();
+	public static void showDialog() {
+		LayoutInflater inflater = i.getLayoutInflater();
+		View view = inflater.inflate(R.layout.balloon_dialog, null);
 
-        dlg.getWindow().addFlags(
-        		WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        		+ WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-		            + WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-		            + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        dlg.show();
-    }
+		Drawable bitmapDrawable = i.getResources().getDrawable(
+				R.drawable.icon_balloon);
+		bitmapDrawable.setBounds(32, 32, 32, 32);
 
+		// ダイアログを作成します。
+		final AlertDialog dlg = new AlertDialog.Builder(i)
+				.setIcon(R.drawable.icon_balloon).setTitle("太郎さん")
+				.setView(view)
+				.setPositiveButton("表示", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
- }
+					}
+				}).setNegativeButton("閉じる", null).create();
+
+		dlg.getWindow().addFlags(
+				WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+						+ WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+						+ WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+						+ WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		dlg.show();
+	}
+
+}
