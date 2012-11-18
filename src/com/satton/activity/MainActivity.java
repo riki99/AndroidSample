@@ -36,7 +36,6 @@ public class MainActivity extends Activity {
 			});
 		}
 
-
         try {
         	File stampFile = new File(getApplicationContext().getFilesDir(), "stamp");
 //        	stampFile.mkdirs();
