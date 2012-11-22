@@ -4,6 +4,7 @@ import java.io.File;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,10 +56,17 @@ public class MainActivity extends Activity {
 			File text = new File(stampFile, "text.txt");
 			// IOUtil.writeXML(text, new String(text.getAbsolutePath()));
 
-			Object obj = IOUtil.readXML(text);
-			System.out.println(obj);
+//			Object obj = IOUtil.readXML(text);
+//			System.out.println(obj);
 
-		} catch (Exception e) {
+			
+			KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+			boolean isDisplayLocked = keyguardManager
+					.inKeyguardRestrictedInputMode();
+
+			System.out.println("***** isDisplayLocked=" +isDisplayLocked);
+
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
