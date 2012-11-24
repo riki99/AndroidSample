@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 
 		@SuppressWarnings("rawtypes")
 		Class[] as = { StampDownloadActivity.class,
-				ImageActivity.class, PopupNotificationActivity.class };
+				MemoryActivity.class, PopupNotificationActivity.class };
 		for (final Class<Activity> c : as) {
 			Button b = new Button(this);
 			b.setText(c.getSimpleName());
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 	// ----------------------------------------------------------------------
 
 	public void imageBtn(View v) {
-		startActivity(new Intent(this, ImageActivity.class));
+		startActivity(new Intent(this, MemoryActivity.class));
 	}
 
 	public void showDialog(View v) {
