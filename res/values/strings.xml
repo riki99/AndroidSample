@@ -9,5 +9,6 @@
     <string name="title_activity_ballone">BalloneActivity</string>
     <string name="title_activity_image">ImageActivity</string>
     <string name="title_activity_progress">ProgressActivity</string>
+    <string name="title_activity_task">TaskActivity</string>
 
 </resources>
