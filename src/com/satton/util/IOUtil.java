@@ -3,7 +3,6 @@ package com.satton.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -337,32 +336,6 @@ public class IOUtil {
 		}
 	}
 
-	/**
-	 * 指定したパス[path]のXMLファイルから、オブジェクトを復元します。
-	 *
-	 * @param path
-	 *            オブジェクトが保存されているパス。
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 *             指定されたパス名で示されるファイルが存在しない場合
-	 */
-	public static Object readXML(String path) throws IOException {
-		return readXML(new File(path));
-	}
-
-	public static Object readXML(File file)
-			throws IOException {
-		XStream xs = new XStream(new DomDriver());
-		InputStream in = null;
-		try {
-			in = new FileInputStream(file);
-			return xs.fromXML(in);
-		} finally {
-			if (in != null) {
-				in.close();
-			}
-		}
-	}
 
 	// ----------------------------------------------------------------------
 	//  I/O その他

@@ -32,8 +32,6 @@
 
         <activity android:name=".activity.MemoryActivity" />
         <activity android:name=".activity.ProgressActivity" />
-        <activity android:name=".activity.StampDownloadActivity" />
-
 
         <service android:name="com.satton.sample.screenlockenable.ScreenStateService" />
 
@@ -45,4 +43,5 @@
     </uses-permission>
 
     <uses-sdk android:minSdkVersion="8" />
+
 </manifest>
