@@ -1,15 +1,15 @@
 package com.satton.activity;
 
-import java.io.File;
+import java.io.InputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
-import com.satton.util.IOUtil;
 
 public class MainActivity extends Activity {
 	public static MainActivity i;
@@ -33,7 +32,7 @@ public class MainActivity extends Activity {
 
 		@SuppressWarnings("rawtypes")
 		Class[] as = { StampDownloadActivity.class,
-				MemoryActivity.class, PopupNotificationActivity.class };
+				 PopupNotificationActivity.class , BitmapMemoryActivity.class,};
 		for (final Class<Activity> c : as) {
 			Button b = new Button(this);
 			b.setText(c.getSimpleName());
@@ -48,15 +47,9 @@ public class MainActivity extends Activity {
 		}
 
 		try {
-			File stampFile = new File(getApplicationContext().getFilesDir(),
-					"stamp");
-			stampFile.mkdirs();
 
-			File text = new File(stampFile, "text.txt");
-			// IOUtil.writeXML(text, new String(text.getAbsolutePath()));
 
-			Object obj = IOUtil.readXML(text);
-			System.out.println(obj);
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,7 +59,7 @@ public class MainActivity extends Activity {
 	// ----------------------------------------------------------------------
 
 	public void imageBtn(View v) {
-		startActivity(new Intent(this, MemoryActivity.class));
+		startActivity(new Intent(this, BitmapMemoryActivity.class));
 	}
 
 	public void showDialog(View v) {

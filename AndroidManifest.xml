@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.MemoryActivity" />
+        <activity android:name=".activity.BitmapMemoryActivity" />
         <activity android:name=".activity.ProgressActivity" />
         <activity android:name=".activity.StampDownloadActivity" />
 
