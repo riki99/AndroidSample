@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
-                PopupNotificationActivity.class, BitmapMemoryActivity.class,
+                PopupNotificationActivity.class, BitmapMemoryActivity.class, DestoryActivity.class
         };
         for (final Class<Activity> c : as) {
             Button b = new Button(this);

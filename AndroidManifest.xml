@@ -30,6 +30,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.DestoryActivity" />
         <activity android:name=".activity.BitmapMemoryActivity" />
         <activity android:name=".activity.ProgressActivity" />
 
@@ -37,6 +38,7 @@
 
     </application>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" >
     </uses-permission>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" >
