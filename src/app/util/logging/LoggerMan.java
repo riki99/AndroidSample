@@ -1,3 +1,4 @@
+
 package app.util.logging;
 
 import java.io.File;
@@ -23,97 +24,97 @@ import app.util.StringUtil;
 
 public class LoggerMan {
 
-	private static boolean startup;
-	/** Logger for this class */
-	private static final Logger logger = Logger.getLogger(LoggerMan.class.getName());
-	private static String propertiesName = "log.properties";
-	public static String logdir = "sys/logs";
-	private static int year = Calendar.getInstance().get(Calendar.YEAR);
-	public static String appLogFileName = "/"+year+"application.log";
+    private static boolean startup;
+    /** Logger for this class */
+    private static final Logger logger = Logger.getLogger(LoggerMan.class.getName());
+    private static String propertiesName = "log.properties";
+    public static String logdir = "sys/logs";
+    private static int year = Calendar.getInstance().get(Calendar.YEAR);
+    public static String appLogFileName = "/" + year + "application.log";
 
-	public static String appLogFilePath = logdir + appLogFileName;
+    public static String appLogFilePath = logdir + appLogFileName;
 
-	public static Handler consoleHandler;
-	public static Handler fileHandler;
+    public static Handler consoleHandler;
+    public static Handler fileHandler;
 
-	public static Formatter consoleFormatter = new CustomFormatter();
+    public static Formatter consoleFormatter = new CustomFormatter();
 
-	 // ----------------------------------------------------------------------
-	 // ## : LoggerMan ?½?½?½O?½o?½?½
-	 // ----------------------------------------------------------------------
-	public static boolean isConfigEnable() {
-		return logger.isLoggable(Level.CONFIG);
-	}
+    // ----------------------------------------------------------------------
+    // ## : LoggerMan ?ï¿½?ï¿½?ï¿½O?ï¿½o?ï¿½?ï¿½
+    // ----------------------------------------------------------------------
+    public static boolean isConfigEnable() {
+        return logger.isLoggable(Level.CONFIG);
+    }
 
-	public static Logger getLogger() {
-		String className = ClassContext.getCallerClassNameAt(2);
-		return Logger.getLogger(className);
-	}
+    public static Logger getLogger() {
+        String className = ClassContext.getCallerClassNameAt(2);
+        return Logger.getLogger(className);
+    }
 
-	// ----------------------------------------------------------------------
-	// ## : LoggerMan ?½İ’ï¿½
-	// ----------------------------------------------------------------------
-	public static boolean defaultConfiguration() {
-		return defaultConfiguration(false);
-	}
+    // ----------------------------------------------------------------------
+    // ## : LoggerMan ?ï¿½İ’ï¿½
+    // ----------------------------------------------------------------------
+    public static boolean defaultConfiguration() {
+        return defaultConfiguration(false);
+    }
 
-	public static synchronized boolean defaultConfiguration(boolean sysoutRedirect) {
-		if (startup) {
-			return true;
-		}
-		try {
+    public static synchronized boolean defaultConfiguration(boolean sysoutRedirect) {
+        if (startup) {
+            return true;
+        }
+        try {
             String str = System.getProperty("java.util.logging.Level");
-			LogManager.getLogManager().reset();
-			consoleHandler = new CustomConsoleHandler();
-			consoleHandler.setFormatter(consoleFormatter);
-			logger.getParent().addHandler(consoleHandler);
+            LogManager.getLogManager().reset();
+            consoleHandler = new CustomConsoleHandler();
+            consoleHandler.setFormatter(consoleFormatter);
+            logger.getParent().addHandler(consoleHandler);
 
-			File f = new File(logdir);
-			if (!f.exists()) {
-				f.mkdirs();
-			}
-			fileHandler = new FileHandler(appLogFilePath, 500000, 1, true);
-			fileHandler.setFormatter(new CustomFormatter(
-					CustomFormatter.FORMAT_FILE));
-			logger.getParent().addHandler(fileHandler);
+            File f = new File(logdir);
+            if (!f.exists()) {
+                f.mkdirs();
+            }
+            fileHandler = new FileHandler(appLogFilePath, 500000, 1, true);
+            fileHandler.setFormatter(new CustomFormatter(
+                    CustomFormatter.FORMAT_FILE));
+            logger.getParent().addHandler(fileHandler);
 
-			setLevel(str);
-			if (logger.isLoggable(Level.FINE)) {
-				listHandlers();
-			}
+            setLevel(str);
+            if (logger.isLoggable(Level.FINE)) {
+                listHandlers();
+            }
 
+            //			MultiStream outStream = new MultiStream(System.out);
+            //			outStream.addStream(new PrintStream(new FileOutputStream(logdir+"/"+year+"stdout.log",true)));
 
-//			MultiStream outStream = new MultiStream(System.out);
-//			outStream.addStream(new PrintStream(new FileOutputStream(logdir+"/"+year+"stdout.log",true)));
+            //			Field field = StreamHandler.class.getDeclaredField("output");
+            //			field.setAccessible(true);
+            //			OutputStream output = (OutputStream) field.get(fileHandler);
+            //			PrintStream outStream = new PrintStream(output);
 
-//			Field field = StreamHandler.class.getDeclaredField("output");
-//			field.setAccessible(true);
-//			OutputStream output = (OutputStream) field.get(fileHandler);
-//			PrintStream outStream = new PrintStream(output);
+            if (sysoutRedirect) {
+                PrintStream outStream = new PrintStream(new FileOutputStream(logdir + "/" + year + "stdout.log", true));
+                System.setOut(outStream);
+                System.setErr(outStream);
+            }
 
-			if (sysoutRedirect) {
-				PrintStream outStream = new PrintStream(new FileOutputStream(logdir+"/"+year+"stdout.log",true));
-				System.setOut(outStream);
-				System.setErr(outStream);
-			}
+            String time = DateUtil.getSysDate();
+            System.out.println("OUT : " + time);
+            System.err.println("ERR : " + time);
 
-			String time = DateUtil.getSysDate();
-			System.out.println("OUT : " + time);
-			System.err.println("ERR : " + time);
+            startup = true;
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            startup = false;
+            return false;
+        }
+    }
 
-			startup = true;
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			startup = false;
-			return false;
-		}
-	}
-	public static void setLevel(String str) {
+    public static void setLevel(String str) {
         Level level = null;
         if (!StringUtil.isExist(str)) {
             level = Level.INFO;
-        }else{
+        } else {
             try {
                 level = Level.parse(str);
             } catch (IllegalArgumentException e) {
@@ -121,86 +122,88 @@ public class LoggerMan {
             }
         }
         consoleHandler.setLevel(level);
-		fileHandler.setLevel(level);
-		logger.getParent().setLevel(level);
-	}
-	static class CustomConsoleHandler extends StreamHandler {
-		public CustomConsoleHandler() {
-			super();
-			setOutputStream(System.out);
-		}
-	    /**
-	     * LogRecord ?½ğ”­s?½?½?½Ü‚ï¿½?½B
-	     * ?½?½?½?½?½Ô‚Å‚ÍA?½?½?½M?½?½?½O?½Ì—v?½?½?½?½ Logger ?½I?½u?½W?½F?½N?½g?½?½
-	     * ?½Î‚ï¿½?½Äs?½?½?½A?½?½?½ÌƒI?½u?½W?½F?½N?½g?½?½ LogRecord ?½?½?½?½?½?½?½?½
-	     * ?½?½?½?½?½É“]?½?½?½?½?½Ü‚ï¿½?½?½?½B
-	     *
-	     * @param   record ?½?½?½O?½C?½x?½?½?½g?½Ìï¿½?½?½?½Bnull ?½?½?½R?½[?½h?½Í’P?½É–ï¿½?½?½?½?½?½?½?½
-	     *                 ?½?½?½?½?½ÅA?½Ê’m?½Ís?½?½?½È‚ï¿½
-	     */
-	    public void publish(LogRecord record) {
-	        super.publish(record);
-	        flush();
-	    }
-	    /**
-	     * StreamHandler.close ?½?½?½I?½[?½o?½[?½?½?½C?½h?½?½?½Äƒt?½?½?½b?½V?½?½?½?½?½Ü‚ï¿½?½?½?½A
-	     * ?½o?½ÍƒX?½g?½?½?½[?½?½?½Í•Â‚ï¿½?½Ü‚ï¿½?½?½B?½Â‚Ü‚ï¿½ASystem.err ?½Í•Â‚ï¿½?½Ü‚ï¿½?½?½B
-	     */
-	    public void close() {
-	        flush();
-	    }
+        fileHandler.setLevel(level);
+        logger.getParent().setLevel(level);
+    }
 
-	}
+    static class CustomConsoleHandler extends StreamHandler {
+        public CustomConsoleHandler() {
+            super();
+            setOutputStream(System.out);
+        }
 
-	/**
-	 * ?½İ’ï¿½t?½@?½C?½?½?½Ì“Ç‚İï¿½?½?½
-	 */
-	public static void propertyConfiguration() {
-		try {
-//			System.setErr(System.out);
-			InputStream in = LoggerMan.class.getResourceAsStream(propertiesName);
-			LogManager.getLogManager().readConfiguration(in);
-			logger.fine("Logger?½Ìİ’è‚ª?½?½?½?½?½?½?½Ü‚ï¿½?½?½?½B");
-			listHandlers();
-			listPropertis();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
+        /**
+         * LogRecord ?ï¿½ğ”­s?ï¿½?ï¿½?ï¿½Ü‚ï¿½?ï¿½B ?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½Ô‚Å‚ÍA?ï¿½?ï¿½?ï¿½M?ï¿½?ï¿½?ï¿½O?ï¿½Ì—v?ï¿½?ï¿½?ï¿½?ï¿½ Logger ?ï¿½I?ï¿½u?ï¿½W?ï¿½F?ï¿½N?ï¿½g?ï¿½?ï¿½
+         * ?ï¿½Î‚ï¿½?ï¿½Äs?ï¿½?ï¿½?ï¿½A?ï¿½?ï¿½?ï¿½ÌƒI?ï¿½u?ï¿½W?ï¿½F?ï¿½N?ï¿½g?ï¿½?ï¿½ LogRecord ?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½ ?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½É“]?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½Ü‚ï¿½?ï¿½?ï¿½?ï¿½B
+         * 
+         * @param record ?ï¿½?ï¿½?ï¿½O?ï¿½C?ï¿½x?ï¿½?ï¿½?ï¿½g?ï¿½Ìï¿½?ï¿½?ï¿½?ï¿½Bnull ?ï¿½?ï¿½?ï¿½R?ï¿½[?ï¿½h?ï¿½Í’P?ï¿½É–ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½ ?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½ÅA?ï¿½Ê’m?ï¿½Ís?ï¿½?ï¿½?ï¿½È‚ï¿½
+         */
+        @Override
+        public void publish(LogRecord record) {
+            super.publish(record);
+            flush();
+        }
 
-	public static void close(){
-		consoleHandler.close();
-		fileHandler.close();
-	}
+        /**
+         * StreamHandler.close ?ï¿½?ï¿½?ï¿½I?ï¿½[?ï¿½o?ï¿½[?ï¿½?ï¿½?ï¿½C?ï¿½h?ï¿½?ï¿½?ï¿½Äƒt?ï¿½?ï¿½?ï¿½b?ï¿½V?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½Ü‚ï¿½?ï¿½?ï¿½?ï¿½A ?ï¿½o?ï¿½ÍƒX?ï¿½g?ï¿½?ï¿½?ï¿½[?ï¿½?ï¿½?ï¿½Í•Â‚ï¿½?ï¿½Ü‚ï¿½?ï¿½?ï¿½B?ï¿½Â‚Ü‚ï¿½ASystem.err
+         * ?ï¿½Í•Â‚ï¿½?ï¿½Ü‚ï¿½?ï¿½?ï¿½B
+         */
+        @Override
+        public void close() {
+            flush();
+        }
 
-	// ----------------------------------------------------------------------
-	// ## : LoggerMan private
-	// ----------------------------------------------------------------------
-	private static void listPropertis() throws IOException {
-		InputStream in = LoggerMan.class.getResourceAsStream(propertiesName);
-		URL url = LoggerMan.class.getResource(propertiesName);
-		System.out.println(url.toString());
-		byte[] b = IOUtil.readStreamByte(in);
-		System.out.println(new String(b));
-	}
+    }
 
-	private static void listHandlers() {
-		// System.out.println(logger.getLevel().getName());
-		logger.fine("?½?½?½Ì?¿½?½K?½[?½?½Handler?½?½?½Å‚ï¿½?½B");
-		Handler[] handlers = logger.getHandlers();
-		handler(handlers);
-		logger.fine("?½?½?½Ì?¿½?½K?½[?½ÌeHandler?½?½?½Å‚ï¿½?½B");
-		handlers = logger.getParent().getHandlers();
-		handler(handlers);
-	}
+    /**
+     * ?ï¿½İ’ï¿½t?ï¿½@?ï¿½C?ï¿½?ï¿½?ï¿½Ì“Ç‚İï¿½?ï¿½?ï¿½
+     */
+    public static void propertyConfiguration() {
+        try {
+            //			System.setErr(System.out);
+            InputStream in = LoggerMan.class.getResourceAsStream(propertiesName);
+            LogManager.getLogManager().readConfiguration(in);
+            logger.fine("Logger?ï¿½Ìİ’è‚ª?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½?ï¿½Ü‚ï¿½?ï¿½?ï¿½?ï¿½B");
+            listHandlers();
+            listPropertis();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	private static void handler(Handler[] handlers) {
-		logger.fine("Handler Size = " + handlers.length);
-		for (int i = 0; i < handlers.length; i++) {
-			Handler handler = handlers[i];
-			logger.fine(handler.getClass().getName());
-			logger.fine(handler.getFormatter().getClass().getName());
-		}
-	}
+    public static void close() {
+        consoleHandler.close();
+        fileHandler.close();
+    }
+
+    // ----------------------------------------------------------------------
+    // ## : LoggerMan private
+    // ----------------------------------------------------------------------
+    private static void listPropertis() throws IOException {
+        InputStream in = LoggerMan.class.getResourceAsStream(propertiesName);
+        URL url = LoggerMan.class.getResource(propertiesName);
+        System.out.println(url.toString());
+        byte[] b = IOUtil.readStreamByte(in);
+        System.out.println(new String(b));
+    }
+
+    private static void listHandlers() {
+        // System.out.println(logger.getLevel().getName());
+        logger.fine("?ï¿½?ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½K?ï¿½[?ï¿½?ï¿½Handler?ï¿½?ï¿½?ï¿½Å‚ï¿½?ï¿½B");
+        Handler[] handlers = logger.getHandlers();
+        handler(handlers);
+        logger.fine("?ï¿½?ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½K?ï¿½[?ï¿½ÌeHandler?ï¿½?ï¿½?ï¿½Å‚ï¿½?ï¿½B");
+        handlers = logger.getParent().getHandlers();
+        handler(handlers);
+    }
+
+    private static void handler(Handler[] handlers) {
+        logger.fine("Handler Size = " + handlers.length);
+        for (int i = 0; i < handlers.length; i++) {
+            Handler handler = handlers[i];
+            logger.fine(handler.getClass().getName());
+            logger.fine(handler.getFormatter().getClass().getName());
+        }
+    }
 
 }
