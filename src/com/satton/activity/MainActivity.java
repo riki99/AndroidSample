@@ -3,6 +3,8 @@ package com.satton.activity;
 
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
+import com.satton.sample.screenlockenable.StampManifest;
+import com.satton.util.ObjectPersistence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,11 +47,20 @@ public class MainActivity extends Activity {
             v.addView(b);
         }
 
-        try {
+        // アプリ起動時に1度だけ初期設定
+        ObjectPersistence.configure(getApplicationContext(), false, null);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // 任意のオブジェクトを保存
+        StampManifest sm = new StampManifest();
+        sm.stamps.put("111", "aaa");
+        sm.stamps.put("222", "bbb");
+        ObjectPersistence.store(sm);
+        sm = null;
+
+        // 指定したクラスのオブジェクトを復元
+        sm = (StampManifest) ObjectPersistence.load(StampManifest.class);
+        System.out.println(sm.stamps.toString());
+
     }
 
     // ----------------------------------------------------------------------

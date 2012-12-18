@@ -6,6 +6,7 @@ import com.satton.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
 
 public class DestoryActivity extends Activity {
@@ -27,8 +28,6 @@ public class DestoryActivity extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-//                System.gc();
-//                System.out.println(mycount + ":System.gc()");
             }
         }).start();
     };
@@ -41,6 +40,15 @@ public class DestoryActivity extends Activity {
 
         ++count;
         mycount = count;
+
+        Button b = (Button) findViewById(R.id.button);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.gc();
+                System.out.println(":System.gc()");
+            }
+        });
 
     }
 

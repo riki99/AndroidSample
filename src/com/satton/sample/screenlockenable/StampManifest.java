@@ -2,7 +2,6 @@
 package com.satton.sample.screenlockenable;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Stamp のカテゴリ毎に１ファイル生成さる。
@@ -13,10 +12,7 @@ import java.util.Map;
  */
 public class StampManifest {
 
-    public static final String NAME = "stamp.manifest";
-
     public String category_id = "";
-    public String category_title = "";
-    public HashMap<String, Map<String, String>> stamps;
+    public HashMap<String, String> stamps = new HashMap<String, String>();
 
 }

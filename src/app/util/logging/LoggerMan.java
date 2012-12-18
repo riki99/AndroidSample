@@ -19,7 +19,6 @@ import java.util.logging.StreamHandler;
 
 import app.util.ClassContext;
 import app.util.DateUtil;
-import app.util.IOUtil;
 import app.util.StringUtil;
 
 public class LoggerMan {
@@ -183,8 +182,6 @@ public class LoggerMan {
         InputStream in = LoggerMan.class.getResourceAsStream(propertiesName);
         URL url = LoggerMan.class.getResource(propertiesName);
         System.out.println(url.toString());
-        byte[] b = IOUtil.readStreamByte(in);
-        System.out.println(new String(b));
     }
 
     private static void listHandlers() {

@@ -4,6 +4,7 @@ package com.satton.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,14 +12,27 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.channels.IllegalSelectorException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+
+import android.util.Log;
+
+import app.util.StringUtil;
 
 /**
  * java.io APIのユーティリティクラス。
  */
 public class IOUtil {
+
+    static final String TAG = "IOUtil";
 
     // ----------------------------------------------------------------------
     //  I/O Basic
@@ -49,6 +63,7 @@ public class IOUtil {
      */
     public static void delete(File deleteDir) {
         if (!deleteDir.exists()) {
+            Log.w(TAG, "引数で指定されたファイル[" + deleteDir.getAbsolutePath() + "]は存在しません。");
             return;
         }
         File[] childs = deleteDir.listFiles();
@@ -59,10 +74,12 @@ public class IOUtil {
                     delete(child);
                 }
                 if (child.delete()) {
+                    Log.d(TAG, "削除 - " + child);
                 }
             }
         }
         if (deleteDir.delete()) {
+            Log.d(TAG, "削除 - " + deleteDir);
         }
     }
 
@@ -73,8 +90,9 @@ public class IOUtil {
      * @return ファイル名
      */
     public static String getPreffix(String fileName) {
-        if (fileName == null)
+        if (fileName == null) {
             return null;
+        }
         fileName = new File(fileName).getName();
         int point = fileName.lastIndexOf(".");
         if (point != -1) {
@@ -87,17 +105,17 @@ public class IOUtil {
      * @param dir
      */
     public static void ls(File dir, boolean recursive) {
-        System.out.println(String.format("dir	%s", dir.getAbsolutePath()));
+        Log.i(TAG, String.format("dir	%s", dir.getAbsolutePath()));
         File[] arry = dir.listFiles();
         if (arry != null) {
             for (File file : arry) {
                 if (recursive && file.isDirectory()) {
                     ls(file, recursive);
                 }
-                System.out.println(String.format("	%s", file.getName()));
+                Log.i(TAG, String.format("	%s", file.getName()));
             }
         } else {
-            System.out.println("	nothing.");
+            Log.i(TAG, "	nothing.");
         }
     }
 
@@ -282,18 +300,34 @@ public class IOUtil {
         if (callback == null) {
             throw new IllegalStateException();
         }
-        HttpURLConnection http = (HttpURLConnection) url.openConnection();
-        http.setRequestMethod("GET");
-        http.connect();
-        //			LogUtil.d(String.format("URL=%s	Content-length: %s	savePath=%s",
-        //					url, http.getContentLength() / 1024 * 1024, saveFile.getAbsolutePath()));
-
-        if (callback != null) {
-            callback.maxLength = http.getContentLength();
+        InputStream in;
+        long content_length;
+        boolean use_apache = true;
+        if (use_apache) {
+            HttpGet request = new HttpGet(url.toString());
+            HttpResponse httpResponse = new DefaultHttpClient().execute(request);
+            HttpEntity entity = httpResponse.getEntity();
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                throw new RuntimeException("http status:" + httpResponse.getStatusLine().getStatusCode());
+            }
+            content_length = entity.getContentLength();
+            in = entity.getContent();
+        } else {
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.connect();
+            content_length = http.getContentLength();
+            in = http.getInputStream();
         }
-        InputStream in = http.getInputStream();
-        IOUtil.copyStream(in, new FileOutputStream(saveFile), 1024, callback);
+        if (callback != null) {
+            callback.maxLength = content_length;
+        }
+        Log.d(TAG, String.format("URL=%s Content-length: %s	  savePath=%s",
+                url, content_length / 1024 * 1024, saveFile.getAbsolutePath()));
+        IOUtil.copyStream(in, new FileOutputStream(saveFile), 100, callback);
 
+        Log.i(TAG, String.format("Download done URL=%s¥n	savePath=%s",
+                url, saveFile.getAbsolutePath()));
     }
 
     // ----------------------------------------------------------------------
@@ -302,19 +336,19 @@ public class IOUtil {
     /**
      * オブジェクト[object]を、 指定したパス[path]に、XMLファイルとして保存します。
      * 
-     * @param path オブジェクトを保存するパス。 存在しない場合可能であれば作成します。
+     * @param file オブジェクトを保存するパス。 存在しない場合可能であれば作成します。
      * @param object 保存するオブジェクト。
+     * @param object 保存するオブジェクトの alias。
      * @throws IOException 指定されたパス名で示されるファイルが開けなかった場合
      */
-    public static void writeXML(String path, Object object) throws IOException {
-        writeXML(new File(path), object);
-    }
-
-    public static void writeXML(File file, Object object) throws IOException {
+    public static void writeXML(File file, Object object, String alias) throws IOException {
         if (!file.getParentFile().exists()) {
             throw new IllegalArgumentException();
         }
         XStream xs = new XStream(new DomDriver());
+        if (StringUtil.isExist(alias)) {
+            xs.alias(alias, object.getClass());
+        }
         OutputStream output = null;
         try {
             output = new FileOutputStream(file);
@@ -322,6 +356,35 @@ public class IOUtil {
         } finally {
             if (output != null) {
                 output.close();
+            }
+        }
+    }
+
+    /**
+     * 指定したパス[path]のXMLファイルから、オブジェクトを復元します。
+     * 
+     * @param file オブジェクトが保存されているファイル。
+     * @param alias alias がある場合指定する
+     * @param clazz 型を指定する場合
+     * @throws IOException
+     * @throws FileNotFoundException 指定されたパス名で示されるファイルが存在しない場合
+     */
+    public static Object readXML(File file, String alias, Class<?> clazz)
+            throws IOException {
+        XStream xs = new XStream(new DomDriver());
+        if (StringUtil.isExist(alias)) {
+            if (clazz == null) {
+                throw new IllegalSelectorException();
+            }
+            xs.alias(alias, clazz);
+        }
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            return xs.fromXML(in);
+        } finally {
+            if (in != null) {
+                in.close();
             }
         }
     }
