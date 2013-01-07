@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
-                PopupNotificationActivity.class, BitmapMemoryActivity.class, DestoryActivity.class
+                BitmapMemoryActivity.class, DestoryActivity.class
         };
         for (final Class<Activity> c : as) {
             Button b = new Button(this);
@@ -71,10 +71,6 @@ public class MainActivity extends Activity {
 
     public void showDialog(View v) {
         showDialog();
-    }
-
-    public void showDialog2(View v) {
-        startActivity(new Intent(this, PopupNotificationActivity.class));
     }
 
     public void startService(View v) {
