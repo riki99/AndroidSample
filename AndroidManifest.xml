@@ -32,8 +32,10 @@
 
         <activity android:name=".activity.DestoryActivity" />
         <activity android:name=".activity.BitmapMemoryActivity" />
-        <activity android:name=".activity.ProgressActivity" />
-
+        <activity android:name=".activity.MemoryActivity" />
+        <activity android:name=".activity.NoAnimeActivity"             android:taskAffinity=""
+            />
+        
         <service android:name="com.satton.sample.screenlockenable.ScreenStateService" />
 
     </application>

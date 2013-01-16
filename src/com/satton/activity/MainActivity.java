@@ -3,8 +3,6 @@ package com.satton.activity;
 
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
-import com.satton.sample.screenlockenable.StampManifest;
-import com.satton.util.ObjectPersistence;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,9 +13,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import app.util.Encrypt;
+import app.util.RuntimeUtils;
 
 public class MainActivity extends Activity {
     public static MainActivity i;
@@ -28,6 +31,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         i = this;
+
+        Window win = getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                + WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                + WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        win.setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
@@ -47,20 +56,11 @@ public class MainActivity extends Activity {
             v.addView(b);
         }
 
-        // アプリ起動時に1度だけ初期設定
-        ObjectPersistence.configure(getApplicationContext(), false, null);
+        RuntimeUtils.getInstallTime(getPackageManager(), "com.satton");
 
-        // 任意のオブジェクトを保存
-        StampManifest sm = new StampManifest();
-        sm.stamps.put("111", "aaa");
-        sm.stamps.put("222", "bbb");
-        ObjectPersistence.store(sm);
-        sm = null;
-
-        // 指定したクラスのオブジェクトを復元
-        sm = (StampManifest) ObjectPersistence.load(StampManifest.class);
-        System.out.println(sm.stamps.toString());
-
+        String s = Encrypt.encrypt("abc");
+        s = Encrypt.decrypt(s);
+        System.out.println(s);
     }
 
     // ----------------------------------------------------------------------

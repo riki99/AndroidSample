@@ -1,6 +1,15 @@
 
 package app.util;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.Date;
+
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+
 public class RuntimeUtils {
 
     public static void sleep(int sec) {
@@ -24,138 +33,48 @@ public class RuntimeUtils {
         }
     }
 
-    /**
-     * Checks the Operating System.
-     * 
-     * @return true if the current os is Windows
-     */
-    public static boolean isWindows() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("windows") != -1 || os.indexOf("nt") != -1;
+    public static Date getInstallTime(
+            PackageManager packageManager, String packageName) {
+        return firstNonNull(
+                installTimeFromPackageManager(packageManager, packageName),
+                apkUpdateTime(packageManager, packageName));
     }
 
-    public static boolean isWindowsVist() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("vista") != -1;
-    }
-
-    public static boolean isWindows7() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("windows 7") != -1;
-    }
-
-    public static boolean isWindowsServer2008() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("Windows Server 2008") != -1;
-    }
-
-    private static Boolean windowsVistaAbove;
-
-    public static boolean isWindowsVistaAbove() {
-        if (windowsVistaAbove == null) {
-            if (RuntimeUtils.isWindowsVist() || RuntimeUtils.isWindows7()) {
-                windowsVistaAbove = new Boolean(true);
-            } else {
-                windowsVistaAbove = new Boolean(false);
-            }
+    private static Date apkUpdateTime(
+            PackageManager packageManager, String packageName) {
+        try {
+            ApplicationInfo info = packageManager.getApplicationInfo(packageName, 0);
+            File apkFile = new File(info.sourceDir);
+            return apkFile.exists() ? new Date(apkFile.lastModified()) : null;
+        } catch (NameNotFoundException e) {
+            return null; // package not found
         }
-        return windowsVistaAbove.booleanValue();
     }
 
-    public static boolean isWindowsXP() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("windows xp") != -1;
-    }
-
-    /**
-     * Checks the Operating System.
-     * 
-     * @return true if the current os is Windows
-     */
-    public static boolean isWindows9X() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.equals("windows 95") || os.equals("windows 98");
-    }
-
-    public static boolean isWindows2000() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.equals("windows 2000");
-    }
-
-    /**
-     * Checks the Operating System.
-     * 
-     * @return true if the current os is Apple
-     */
-    public static boolean isMac() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("mac") != -1;
-    }
-
-    /**
-     * Checks the Operating System.
-     * 
-     * @return true if the current os is Linux
-     */
-    public static boolean isLinux() {
-        String os = System.getProperty("os.name").toLowerCase();
-        return os.indexOf("linux") != -1;
-    }
-
-    /**
-     * ���s����OS��UNIX�ŉғ����Ă��邩�ǂ����̘_���l��Ԃ��܂��B
-     * 
-     * @return [true]�FUNIX�ŉғ����Ă���ꍇ
-     */
-    public static boolean runUnix() {
-        String os = System.getProperty("os.name");
-        if (os.indexOf("Windows") != -1) {
-            return false;
+    private static Date installTimeFromPackageManager(
+            PackageManager packageManager, String packageName) {
+        // API level 9 and above have the "firstInstallTime" field.
+        // Check for it with reflection and return if present. 
+        try {
+            PackageInfo info = packageManager.getPackageInfo(packageName, 0);
+            Field field = PackageInfo.class.getField("firstInstallTime");
+            long timestamp = field.getLong(info);
+            return new Date(timestamp);
+        } catch (NameNotFoundException e) {
+            return null; // package not found
+        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException e) {
+        } catch (IllegalArgumentException e) {
+        } catch (SecurityException e) {
         }
-        return true;
+        // field wasn't found
+        return null;
     }
 
-    /**
-     * JDK1.6�ȏ�
-     * 
-     * @return
-     */
-    public static boolean isJava16Above() {
-        String version = System.getProperty("java.version");
-        return version.compareTo("1.6") >= 0;
+    private static Date firstNonNull(Date... dates) {
+        for (Date date : dates)
+            if (date != null)
+                return date;
+        return null;
     }
-
-    /**
-     * JDK1.5�ȏ�
-     * 
-     * @return
-     */
-    public static boolean isJava15Above() {
-        String version = System.getProperty("java.version");
-        return version.compareTo("1.5") >= 0;
-    }
-
-    /**
-     * JDK1.4�ȏ�
-     * 
-     * @return
-     */
-    public static boolean isJava14Above() {
-        String version = System.getProperty("java.version");
-        return version.compareTo("1.4") >= 0;
-    }
-
-    private static long currentTimeNumber = System.currentTimeMillis();
-
-    public synchronized static long currentTimeMillis() {
-        long number = System.currentTimeMillis();
-        int i = 0;
-        while (currentTimeNumber == number) {
-            number = number + ++i;
-        }
-        sleep(i + 1);
-        currentTimeNumber = number;
-        return number;
-    }
-
 }

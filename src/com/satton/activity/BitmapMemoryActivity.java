@@ -13,6 +13,7 @@ import com.satton.R;
 import com.satton.util.MemoryInfoDumper;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -30,11 +31,19 @@ public class BitmapMemoryActivity extends Activity {
 
     ArrayList<ImageView> list = new ArrayList<ImageView>();
 
+    public BitmapMemoryActivity() {
+        System.out.println(11111);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Intent intent = new Intent(this, NoAnimeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
-        overridePendingTransition(R.anim.slidein_start, R.anim.slidein_end);
 
         try {
             InputStream is = getApplication().getAssets().open("stamp/ninja.png");
@@ -119,7 +128,6 @@ public class BitmapMemoryActivity extends Activity {
     @Override
     public void onBackPressed() {
         this.finish();
-        overridePendingTransition(R.anim.slideout_start, R.anim.slideout_end);
         return;
     }
 
