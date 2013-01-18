@@ -1,8 +1,11 @@
 
 package com.satton.activity;
 
+import java.security.MessageDigest;
+
 import com.satton.R;
 import com.satton.sample.screenlockenable.ScreenStateService;
+import com.thoughtworks.xstream.core.util.Base64Encoder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,7 +22,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import app.util.Encrypt;
 import app.util.RuntimeUtils;
 
 public class MainActivity extends Activity {
@@ -58,9 +60,18 @@ public class MainActivity extends Activity {
 
         RuntimeUtils.getInstallTime(getPackageManager(), "com.satton");
 
-        String s = Encrypt.encrypt("abc");
-        s = Encrypt.decrypt(s);
-        System.out.println(s);
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update("111".getBytes());
+            md.update("aaa".getBytes());
+            byte[] digest = md.digest();
+            Base64Encoder encoder = new Base64Encoder();
+            String b64digest = encoder.encode(digest);
+            String passDigest = b64digest.trim();
+            System.out.println(passDigest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ----------------------------------------------------------------------
