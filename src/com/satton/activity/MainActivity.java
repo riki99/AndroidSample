@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         i = this;
 
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
-                BitmapMemoryActivity.class, DestoryActivity.class
+                WebViewActivity.class, BitmapMemoryActivity.class, DestoryActivity.class
         };
         for (final Class<Activity> c : as) {
             Button b = new Button(this);

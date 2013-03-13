@@ -30,6 +30,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.WebViewActivity" />
         <activity android:name=".activity.DestoryActivity" />
         <activity android:name=".activity.BitmapMemoryActivity" />
         <activity android:name=".activity.MemoryActivity" />
