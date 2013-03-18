@@ -25,7 +25,14 @@ public class WebViewActivity extends Activity {
         settings.setJavaScriptEnabled(true);
 
         web.setWebViewClient(new WebViewClient() {
-
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, final String url) {
+                if (url.contains("finish")) {
+                    finish();
+                    return true;
+                }
+                return false;
+            }
         });
         web.setWebChromeClient(new WebChromeClient() {
             @Override

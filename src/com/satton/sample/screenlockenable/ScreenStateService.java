@@ -1,7 +1,7 @@
 
 package com.satton.sample.screenlockenable;
 
-import com.satton.activity.MainActivity;
+import com.satton.activity.SampleMainActivity;
 
 import android.app.Service;
 import android.content.Intent;
@@ -13,14 +13,14 @@ public class ScreenStateService extends Service {
     static boolean callService = false;
 
     public static void start() {
-        Intent intent = new Intent(MainActivity.i, ScreenStateService.class);
-        MainActivity.i.startService(intent);
+        Intent intent = new Intent(SampleMainActivity.i, ScreenStateService.class);
+        SampleMainActivity.i.startService(intent);
     }
 
     public static void stop() {
         try {
-            Intent intent = new Intent(MainActivity.i, ScreenStateService.class);
-            MainActivity.i.stopService(intent);
+            Intent intent = new Intent(SampleMainActivity.i, ScreenStateService.class);
+            SampleMainActivity.i.stopService(intent);
             System.out.println("ScreenLock:stop service.....");
         } catch (Exception e) {
             // TODO: handle exception

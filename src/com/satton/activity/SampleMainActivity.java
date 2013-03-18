@@ -24,8 +24,8 @@ import android.widget.LinearLayout;
 
 import app.util.RuntimeUtils;
 
-public class MainActivity extends Activity {
-    public static MainActivity i;
+public class SampleMainActivity extends Activity {
+    public static SampleMainActivity i;
     private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT;
 
     @Override
@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
-                WebViewActivity.class, BitmapMemoryActivity.class, DestoryActivity.class
+                WebViewDialog.class, WebViewActivity.class, BitmapMemoryActivity.class, DestoryActivity.class
         };
         for (final Class<Activity> c : as) {
             Button b = new Button(this);
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(MainActivity.this, c));
+                    startActivity(new Intent(SampleMainActivity.this, c));
                 }
             });
 
