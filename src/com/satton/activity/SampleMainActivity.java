@@ -1,11 +1,9 @@
 
 package com.satton.activity;
 
-import java.security.MessageDigest;
-
 import com.satton.R;
+import com.satton.overlay.LayerService;
 import com.satton.sample.screenlockenable.ScreenStateService;
-import com.thoughtworks.xstream.core.util.Base64Encoder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,8 +19,6 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
-import app.util.RuntimeUtils;
 
 public class SampleMainActivity extends Activity {
     public static SampleMainActivity i;
@@ -43,7 +39,10 @@ public class SampleMainActivity extends Activity {
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
-                WebViewDialog.class, WebViewActivity.class, BitmapMemoryActivity.class, DestoryActivity.class
+                WebViewDialog.class,
+                WebViewActivity.class,
+                BitmapMemoryActivity.class,
+                DestoryActivity.class
         };
         for (final Class<Activity> c : as) {
             Button b = new Button(this);
@@ -59,20 +58,8 @@ public class SampleMainActivity extends Activity {
             v.addView(b);
         }
 
-        RuntimeUtils.getInstallTime(getPackageManager(), "com.satton");
-
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update("111".getBytes());
-            md.update("aaa".getBytes());
-            byte[] digest = md.digest();
-            Base64Encoder encoder = new Base64Encoder();
-            String b64digest = encoder.encode(digest);
-            String passDigest = b64digest.trim();
-            System.out.println(passDigest);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        startService(new Intent(this, LayerService.class));
+        //        finish();
     }
 
     // ----------------------------------------------------------------------

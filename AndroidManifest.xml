@@ -7,7 +7,7 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name" android:name="com.satton.App">
         <activity
             android:name=".activity.SampleMainActivity"
             android:label="@string/app_name" >
@@ -29,19 +29,23 @@
                 <data android:scheme="co-mm_popup" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".activity.WebViewDialog"
+            android:theme="@android:style/Theme.Translucent" />
         <activity android:name=".activity.WebViewActivity" />
-        <activity android:name=".activity.WebViewDialog" />
         <activity android:name=".activity.DestoryActivity" />
         <activity android:name=".activity.BitmapMemoryActivity" />
         <activity android:name=".activity.MemoryActivity" />
-        <activity android:name=".activity.NoAnimeActivity"             android:taskAffinity=""
-            />
-        
-        <service android:name="com.satton.sample.screenlockenable.ScreenStateService" />
+        <activity android:name="com.satton.overlay.SystemOverlayLayerActivity" />
+        <activity
+            android:name=".activity.NoAnimeActivity"
+            android:taskAffinity="" />
 
+        <service android:name="com.satton.sample.screenlockenable.ScreenStateService" />
+        <service android:name="com.satton.overlay.LayerService" />
     </application>
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -49,7 +53,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" >
     </uses-permission>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" >
