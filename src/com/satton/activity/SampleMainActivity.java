@@ -2,14 +2,15 @@
 package com.satton.activity;
 
 import com.satton.R;
-import com.satton.overlay.LayerService;
 import com.satton.sample.screenlockenable.ScreenStateService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ public class SampleMainActivity extends Activity {
 
         @SuppressWarnings("rawtypes")
         Class[] as = {
+                ContactActivity.class,
                 WebViewDialog.class,
                 WebViewActivity.class,
                 BitmapMemoryActivity.class,
@@ -56,9 +58,12 @@ public class SampleMainActivity extends Activity {
 
             LinearLayout v = (LinearLayout) findViewById(R.id.lay);
             v.addView(b);
-        }
 
-        startService(new Intent(this, LayerService.class));
+        }
+        final WifiManager wMgr = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        String macAddress = wMgr.getConnectionInfo().getMacAddress();
+        System.out.println(macAddress);
+        //        startService(new Intent(this, LayerService.class));
         //        finish();
     }
 
